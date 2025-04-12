@@ -4,7 +4,7 @@ A **fast**, **modern** Neovim setup built on [LazyVim](https://github.com/LazyVi
 
 ### 🔮 Highlights
 
-- **Theme:** [Tokyonight](https://github.com/folke/tokyonight.nvim) _(with subtle customizations)_
+- **Theme:** [solarized-osaka](https://github.com/craftzdog/solarized-osaka.nvim) _(with subtle customizations)_
     
 - **Foundation:** LazyVim for performance + lazy-loading
     
@@ -23,10 +23,10 @@ A **fast**, **modern** Neovim setup built on [LazyVim](https://github.com/LazyVi
 ---
 
 ## 🎨 Theme & Screenshot
-**Tokyonight** with custom touches:  
+**Solarized-osaka** with custom touches:  
 
 <div align="center">
-  <img src="./assets/nvimScreenShot.png" alt="Neovim Tokyonight Screenshot" width="800">
+  <img src="./assets/nvimScreenShot.png" alt="Neovim Solarized-osaka Screenshot" width="800">
   <br>
   <em>Clean • Fast • Beautiful</em>
 </div>
