@@ -28,5 +28,5 @@ A **fast**, **modern** Neovim setup built on [LazyVim](https://github.com/LazyVi
 <div align="center">
   <img src="./assets/nvimScreenShot.png" alt="Neovim Solarized-osaka Screenshot" width="800">
   <br>
-  <em>Clean • Fast • Beautiful</em>
+  <em>Clean. Aint it?</em>
 </div>
