@@ -89,3 +89,11 @@ end)
 keymap.set("n", "<leader>i", function()
   require("zpyankie.lsp").toggleInlayHints()
 end)
+
+keymap.set("i", "<Tab>", function()
+  if require("copilot.suggestion").is_visible() then
+    require("copilot.suggestion").accept()
+  else
+    return "<Tab>"
+  end
+end, { expr = true })
