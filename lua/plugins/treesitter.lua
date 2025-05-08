@@ -19,6 +19,7 @@ return {
         "sql",
         "lua",
         "printf",
+        "go",
       },
     },
     config = function(_, opts)

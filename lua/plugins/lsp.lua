@@ -26,10 +26,12 @@ return {
         "luacheck",
         "cpptools",
         "eslint-lsp",
+        "rust-analyzer",
         "tailwindcss-language-server",
         "typescript-language-server",
         "clangd", -- Add this for C/C++ LSP
         "clang-format", -- Add this for formatting
+        "gopls", -- Add this for Go LSP
       })
     end,
   },
