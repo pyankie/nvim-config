@@ -72,6 +72,11 @@ return {
             return require("CopilotChat.select").gitdiff()
           end,
         },
+        FixIssues = {
+          prompt = "Identify and fix issues in the selected code.",
+          mapping = "<leader>cfi",
+          description = "Fix issues",
+        },
         Summarize = {
           prompt = "Summarize the selected text.",
           mapping = "<leader>cs",
@@ -83,7 +88,10 @@ return {
           description = "Fix grammar",
         },
       },
-      model = "gpt-4o",
+      -- model = "gpt-4o",
+      -- model = "claude-3.7-sonnet",
+      -- model = "gemini-2.0-flash",
+      model = "gpt-5",
       temperature = 0.7,
     },
     config = function(_, opts)
@@ -108,13 +116,16 @@ return {
         end
       end, { desc = "CopilotChat - Perplexity Search" })
 
-      -- Chat history save/load
+      -- Chat history save/load/enable/disable
       vim.keymap.set("n", "<leader>ccs", "<cmd>CopilotChatSave my_session<cr>", { desc = "CopilotChat - Save session" })
       vim.keymap.set("n", "<leader>ccl", "<cmd>CopilotChatLoad my_session<cr>", { desc = "CopilotChat - Load session" })
+      vim.keymap.set("n", "<leader>ccd", "<cmd>Copilot disable<cr>", { desc = "CopilotChat - Disable" })
+      vim.keymap.set("n", "<leader>cce", "<cmd>Copilot enable<cr>", { desc = "CopilotChat - Enable" })
+      vim.keymap.set("n", "<leader>cco", "<cmd>CopilotChat<cr>", { desc = "CopilotChat - Open" })
 
       -- Model selection
       vim.keymap.set("n", "<leader>ccm", function()
-        local model = vim.fn.input("Select model (gpt-4o, claude-3.7-sonnet, gemini-2.0-flash): ")
+        local model = vim.fn.input("Select model (gpt-5, gpt-4o, claude-3.7-sonnet, gemini-2.0-flash): ")
         if model ~= "" then
           require("CopilotChat").reset()
           require("CopilotChat").setup(vim.tbl_extend("force", opts, { model = model }))
@@ -129,13 +140,13 @@ return {
       end, { desc = "Show current CopilotChat model" })
     end,
     keys = {
-      { "<leader>cc", "<cmd>CopilotChat<cr>", desc = " CopilotChat - Open chat" },
-      { "<leader>ce", "<cmd>CopilotChatExplain<cr>", desc = " CopilotChat - Explain code" },
-      { "<leader>cr", "<cmd>CopilotChatReview<cr>", desc = " CopilotChat - Review code" },
-      { "<leader>ct", "<cmd>CopilotChatTests<cr>", desc = " CopilotChat - Generate tests" },
-      { "<leader>co", "<cmd>CopilotChatRefactor<cr>", desc = " CopilotChat - Refactor code" },
-      { "<leader>cd", "<cmd>CopilotChatDocs<cr>", desc = " CopilotChat - Generate docs" },
-      { "<leader>cc", "<cmd>CopilotChatCommit<cr>", desc = " CopilotChat - Generate commit message" },
+      { "<leader>cc", "<cmd>CopilotChat<cr>", desc = "CopilotChat - Open chat" },
+      { "<leader>ce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
+      { "<leader>cr", "<cmd>CopilotChatReview<cr>", desc = "CopilotChat - Review code" },
+      { "<leader>ct", "<cmd>CopilotChatTests<cr>", desc = "CopilotChat - Generate tests" },
+      { "<leader>co", "<cmd>CopilotChatRefactor<cr>", desc = "CopilotChat - Refactor code" },
+      { "<leader>cd", "<cmd>CopilotChatDocs<cr>", desc = "CopilotChat - Generate docs" },
+      { "<leader>cc", "<cmd>CopilotChatCommit<cr>", desc = "CopilotChat - Generate commit message" },
       { "<leader>cs", "<cmd>CopilotChatSummarize<cr>", desc = "CopilotChat - Summarize text" },
       { "<leader>cg", "<cmd>CopilotChatFixGrammar<cr>", desc = "CopilotChat - Fix grammar" },
       { "<leader>ccm", desc = "CopilotChat - Select model" },

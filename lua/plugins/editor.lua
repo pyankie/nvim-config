@@ -1,20 +1,66 @@
 return {
   {
-    enabled = false,
     "folke/flash.nvim",
-    ---@type Flash.Config
+    event = "VeryLazy",
     opts = {
       search = {
-        forward = true,
-        multi_window = false,
-        wrap = false,
         incremental = true,
+        multi_window = false,
+        wrap_results = false,
+        exclude = {
+          filetype = { "notify", "cmp_menu", "noice" },
+        },
+      },
+      incremental_selection = {
+        enabled = true,
+      },
+      { modes = { char = { enabled = false } } },
+    },
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+      {
+        "R",
+        mode = { "o", "x" },
+        function()
+          require("flash").treesitter_search()
+        end,
+        desc = "Treesitter Search",
+      },
+      {
+        "<c-s>",
+        mode = { "c" },
+        function()
+          require("flash").toggle()
+        end,
+        desc = "Toggle Flash Search",
       },
     },
   },
-
   {
-    "echasnovski/mini.hipatterns",
+    "nvim-mini/mini.hipatterns",
     event = "BufReadPre",
     opts = {
       highlighters = {
@@ -22,11 +68,8 @@ return {
           pattern = "hsl%(%d+,? %d+%%?,? %d+%%?%)",
           group = function(_, match)
             local utils = require("solarized-osaka.hsl")
-            --- @type string, string, string
             local nh, ns, nl = match:match("hsl%((%d+),? (%d+)%%?,? (%d+)%%?%)")
-            --- @type number?, number?, number?
             local h, s, l = tonumber(nh), tonumber(ns), tonumber(nl)
-            --- @type string
             local hex_color = utils.hslToHex(h, s, l)
             return MiniHipatterns.compute_hex_color_group(hex_color, "bg")
           end,
@@ -34,20 +77,16 @@ return {
       },
     },
   },
-
   {
     "dinhhuy258/git.nvim",
     event = "BufReadPre",
     opts = {
       keymaps = {
-        -- Open blame window
         blame = "<Leader>gb",
-        -- Open file/folder in git repository
         browse = "<Leader>go",
       },
     },
   },
-
   {
     "telescope.nvim",
     dependencies = {
@@ -132,11 +171,9 @@ return {
         "sf",
         function()
           local telescope = require("telescope")
-
           local function telescope_buffer_dir()
             return vim.fn.expand("%:p:h")
           end
-
           telescope.extensions.file_browser.file_browser({
             path = "%:p:h",
             cwd = telescope_buffer_dir(),
@@ -155,7 +192,6 @@ return {
       local telescope = require("telescope")
       local actions = require("telescope.actions")
       local fb_actions = require("telescope").extensions.file_browser.actions
-
       opts.defaults = vim.tbl_deep_extend("force", opts.defaults, {
         wrap_results = true,
         layout_strategy = "horizontal",
@@ -178,12 +214,9 @@ return {
       opts.extensions = {
         file_browser = {
           theme = "dropdown",
-          -- disables netrw and use telescope-file-browser in its place
           hijack_netrw = true,
           mappings = {
-            -- your custom insert mode mappings
             ["n"] = {
-              -- your custom normal mode mappings
               ["N"] = fb_actions.create,
               ["h"] = fb_actions.goto_parent_dir,
               ["/"] = function()
@@ -209,21 +242,5 @@ return {
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("file_browser")
     end,
-  },
-
-  {
-    "saghen/blink.cmp",
-    opts = {
-      completion = {
-        menu = {
-          winblend = vim.o.pumblend,
-        },
-      },
-      signature = {
-        window = {
-          winblend = vim.o.pumblend,
-        },
-      },
-    },
   },
 }

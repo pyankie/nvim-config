@@ -121,7 +121,7 @@ return {
     opts = {
       ensure_installed = {
         "bash",
-        "html",
+        -- "html",
         "css",
         "cpp",
         "java",
@@ -137,7 +137,7 @@ return {
         "tsx",
         "typescript",
         "vim",
-        "yaml",
+        -- "yaml",
       },
     },
   },
@@ -184,7 +184,7 @@ return {
 
   -- add any tools you want to have installed below
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
         "stylua",
