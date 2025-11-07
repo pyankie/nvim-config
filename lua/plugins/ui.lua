@@ -2,6 +2,7 @@ return {
   -- messages, cmdline and the popupmenu
   {
     "folke/noice.nvim",
+    enabled = true,
     opts = function(_, opts)
       -- Add inc_rename preset
       opts.presets = opts.presets or {}

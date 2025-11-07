@@ -5,6 +5,9 @@ vim.opt.fileencoding = "utf-8"
 
 vim.opt.number = true
 
+-- Set log level to WARN to reduce log noise
+vim.lsp.set_log_level("WARN")
+
 -- for undotree
 vim.opt.undofile = true
 vim.opt.undodir = vim.fn.expand("~/.vim/undodir")
