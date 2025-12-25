@@ -1,5 +1,15 @@
+---@module 'plugins.lsp'
+--- LSP (Language Server Protocol) configuration
+--- Manages language servers, formatters, and linters
+---
+--- Key features:
+--- - Mason for LSP/tool installation
+--- - Pre-configured language servers
+--- - Custom keymaps for LSP actions
+--- - Inlay hints configuration
+
 return {
-  -- tools
+  -- Mason: LSP/DAP/Linter/Formatter installer
   {
     "mason-org/mason.nvim",
     opts = function(_, opts)
@@ -16,20 +26,44 @@ return {
         "tailwindcss-language-server",
         "typescript-language-server",
         "css-lsp",
-        "clangd", -- Add this for C/C++ LSP
-        "clang-format", -- Add this for formatting
-        "gopls", -- Add this for Go LSP
+        "clangd",
+        "clang-format",
+        "gopls",
       })
     end,
   },
 
-  -- lsp servers
+  -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
     opts = {
       inlay_hints = { enabled = false },
       ---@type lspconfig.options
       servers = {
+        -- Global configuration for all LSP servers
+        ["*"] = {
+          -- Custom keymaps for all servers
+          keys = {
+            {
+              "gd",
+              function()
+                -- Use Telescope for definitions without reusing window
+                require("telescope.builtin").lsp_definitions({ reuse_win = false })
+              end,
+              desc = "Goto Definition",
+              has = "definition",
+            },
+          },
+          -- Capabilities for folding support
+          capabilities = {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+              },
+            },
+          },
+        },
         cssls = {},
         emmet_ls = {
           filetypes = {
@@ -171,37 +205,8 @@ return {
             },
           },
         },
-        config = function()
-          local capabilities = {
-            textDocument = {
-              foldingRange = {
-                dynamicRegistration = false,
-                lineFoldingOnly = true,
-              },
-            },
-          }
-
-          capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
-        end,
-        setup = {},
       },
-    },
-    {
-      "neovim/nvim-lspconfig",
-      opts = function()
-        local keys = require("lazyvim.plugins.lsp.keymaps").get()
-        vim.list_extend(keys, {
-          {
-            "gd",
-            function()
-              -- DO NOT RESUSE WINDOW
-              require("telescope.builtin").lsp_definitions({ reuse_win = false })
-            end,
-            desc = "Goto Definition",
-            has = "definition",
-          },
-        })
-      end,
+      setup = {},
     },
   },
 }

@@ -1,16 +1,23 @@
+---@module 'zpyankie.lsp'
+--- Custom LSP utilities and helpers
+--- Provides additional LSP functionality beyond default configuration
+
 local M = {}
 
+--- Toggle LSP inlay hints on/off for the current buffer
+--- Inlay hints show additional type information inline in your code
+--- Useful for TypeScript, Rust, and other strongly-typed languages
+---@return nil
 function M.toggleInlayHints()
-  vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+  local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+  vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = 0 })
+
+  -- Provide user feedback
+  if is_enabled then
+    vim.notify("Inlay hints disabled", vim.log.levels.INFO)
+  else
+    vim.notify("Inlay hints enabled", vim.log.levels.INFO)
+  end
 end
 
 return M
-
--- local M = {}
---
--- function M.toggleInlayHints()
---   local is_enabled = vim.lsp.inlay_hint.is_enabled() or false -- Ensure it's a boolean
---   vim.lsp.inlay_hint.enable() -- Pass a proper boolean value
--- end
---
--- return M

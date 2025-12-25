@@ -1,3 +1,11 @@
+---@module 'config.lazy'
+--- Lazy.nvim plugin manager configuration
+--- Bootstraps and configures the plugin manager for optimal performance
+
+-- ============================================================================
+-- Bootstrap lazy.nvim
+-- ============================================================================
+-- Automatically install lazy.nvim if not present
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -5,7 +13,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
+      { out,                            "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -14,50 +22,73 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- ============================================================================
+-- Plugin Specification
+-- ============================================================================
 require("lazy").setup({
   spec = {
-    -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = {
-      colorscheme = "solarized-osaka",
-    } },
-    -- import/override with your plugins
-    { import = "lazyvim.plugins.extras.linting.eslint" },
-    { import = "lazyvim.plugins.extras.coding.blink" },
-    { import = "lazyvim.plugins.extras.formatting.prettier" },
-    { import = "lazyvim.plugins.extras.lang.typescript" },
-    { import = "lazyvim.plugins.extras.lang.json" },
-    { import = "lazyvim.plugins.extras.lang.java" },
-    -- { import = "lazyvim.plugins.extras.lang.cpp" },
-    -- { import = "lazyvim.plugins.extras.lang.php" },
-    { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
+    -- LazyVim base configuration
+    {
+      "LazyVim/LazyVim",
+      import = "lazyvim.plugins",
+      opts = {
+        colorscheme = "solarized-osaka", -- Default colorscheme
+      },
+    },
+
+    -- Import LazyVim extra modules for enhanced functionality
+    { import = "lazyvim.plugins.extras.linting.eslint" },       -- ESLint integration
+    { import = "lazyvim.plugins.extras.coding.blink" },         -- Blink completion
+    { import = "lazyvim.plugins.extras.formatting.prettier" },  -- Prettier formatting
+    { import = "lazyvim.plugins.extras.lang.typescript" },      -- TypeScript support
+    { import = "lazyvim.plugins.extras.lang.json" },            -- JSON support
+    { import = "lazyvim.plugins.extras.lang.java" },            -- Java support
+    { import = "lazyvim.plugins.extras.util.mini-hipatterns" }, -- Color highlighting
+
+    -- Import custom plugin configurations from lua/plugins/
     { import = "plugins" },
   },
+
+  -- ============================================================================
+  -- Plugin Loading Defaults
+  -- ============================================================================
   defaults = {
-    -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
-    -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
-    lazy = false,
-    -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
-    -- have outdated releases, which may break your Neovim install.
-    version = false, -- always use the latest git commit
-    -- version = "*", -- try installing the latest stable version for plugins that support semver
+    lazy = false,    -- Load plugins on startup (set true for lazy-loading by default)
+    version = false, -- Use latest git commit (recommended for most plugins)
+    -- version = "*", -- Uncomment to use latest stable versions with semver
   },
-  install = { colorscheme = { "solarized-dark", "habamax" } },
+
+  -- ============================================================================
+  -- Installation Settings
+  -- ============================================================================
+  install = {
+    colorscheme = { "solarized-osaka", "habamax" }, -- Fallback colorschemes during install
+  },
+
+  -- ============================================================================
+  -- Update Checker
+  -- ============================================================================
   checker = {
-    enabled = true, -- check for plugin updates periodically
-    notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+    enabled = true, -- Check for plugin updates periodically
+    notify = false, -- Don't notify about updates (check manually with :Lazy)
+  },
+
+  -- ============================================================================
+  -- Performance Optimizations
+  -- ============================================================================
   performance = {
     rtp = {
-      -- disable some rtp plugins
+      -- Disable unused builtin plugins for faster startup
       disabled_plugins = {
-        "gzip",
-        -- "matchit",
-        -- "matchparen",
-        -- "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+        "gzip",      -- Gzip file support
+        "tarPlugin", -- Tar archive support
+        "tohtml",    -- Convert buffer to HTML
+        "tutor",     -- Neovim tutor
+        "zipPlugin", -- Zip archive support
+        -- Keep these enabled for core functionality:
+        -- "matchit",    -- Extended % matching
+        -- "matchparen", -- Highlight matching parentheses
+        -- "netrwPlugin", -- Network file explorer
       },
     },
   },

@@ -1,2 +1,21 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
+---@diagnostic disable: undefined-global
+-- ============================================================================
+-- Personal Neovim Configuration
+-- ============================================================================
+-- A modern, modular Neovim setup built on LazyVim
+-- Inspired by Takuya Matsuyama's configuration
+--
+-- GitHub: https://github.com/pyankie/nvim-config
+-- Structure:
+--   lua/config/   - Core configuration (options, keymaps, autocmds)
+--   lua/plugins/  - Plugin specifications
+--   lua/util/     - Utility functions
+--   lua/zpyankie/ - Custom modules and helpers
+--
+-- Documentation: See README.md
+-- Contributing: See CONTRIBUTING.md
+-- ============================================================================
+
+-- Bootstrap and initialize lazy.nvim plugin manager
+-- This loads all plugins and configuration modules
 require("config.lazy")

@@ -1,9 +1,19 @@
--- https://github.com/EmmanuelOga/columns/blob/master/utils/color.lua
+---@module 'zpyankie.hsl'
+--- Color conversion utilities
+--- Provides HSL/RGB/Hex color format conversion functions
+--- Original source: https://github.com/EmmanuelOga/columns/blob/master/utils/color.lua
+---
+--- Usage:
+---   - Press <leader>r on a line with hex colors to convert them to HSL
+---   - Useful for CSS, styling work, and color manipulation
 
 local M = {}
 
 local hexChars = "0123456789abcdef"
 
+--- Convert hex color string to RGB values
+---@param hex string Hex color code (e.g., "#ff5733")
+---@return table RGB values normalized to [0,1] range
 function M.hex_to_rgb(hex)
   hex = string.lower(hex)
   local ret = {}
@@ -17,17 +27,15 @@ function M.hex_to_rgb(hex)
   return ret
 end
 
---[[
- * Converts an RGB color value to HSL. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes r, g, and b are contained in the set [0, 255] and
- * returns h, s, and l in the set [0, 1].
- *
- * @param   Number  r       The red color value
- * @param   Number  g       The green color value
- * @param   Number  b       The blue color value
- * @return  Array           The HSL representation
-]]
+--- Convert RGB color values to HSL
+--- Conversion formula adapted from http://en.wikipedia.org/wiki/HSL_color_space
+--- Assumes r, g, and b are in the range [0, 1]
+---@param r number Red component (0-1)
+---@param g number Green component (0-1)
+---@param b number Blue component (0-1)
+---@return number h Hue (0-360)
+---@return number s Saturation (0-100)
+---@return number l Lightness (0-100)
 function M.rgbToHsl(r, g, b)
   local max, min = math.max(r, g, b), math.min(r, g, b)
   local h = 0
@@ -37,7 +45,7 @@ function M.rgbToHsl(r, g, b)
   l = (max + min) / 2
 
   if max == min then
-    h, s = 0, 0 -- achromatic
+    h, s = 0, 0 -- achromatic (gray)
   else
     local d = max - min
     if l > 0.5 then
@@ -45,6 +53,8 @@ function M.rgbToHsl(r, g, b)
     else
       s = d / (max + min)
     end
+
+    -- Calculate hue based on which component is maximum
     if max == r then
       h = (g - b) / d
       if g < b then
@@ -61,24 +71,26 @@ function M.rgbToHsl(r, g, b)
   return h * 360, s * 100, l * 100
 end
 
---[[
- * Converts an HSL color value to RGB. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes h, s, and l are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
- *
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  l       The lightness
- * @return  Array           The RGB representation
-]]
+--- Convert HSL color values to RGB
+--- Conversion formula adapted from http://en.wikipedia.org/wiki/HSL_color_space
+---@param h number Hue (0-1)
+---@param s number Saturation (0-1)
+---@param l number Lightness (0-1)
+---@return number r Red (0-255)
+---@return number g Green (0-255)
+---@return number b Blue (0-255)
 function M.hslToRgb(h, s, l)
   local r, g, b
 
   if s == 0 then
     r, g, b = l, l, l -- achromatic
   else
-    function hue2rgb(p, q, t)
+    --- Helper function for hue to RGB conversion
+    ---@param p number
+    ---@param q number
+    ---@param t number
+    ---@return number
+    local function hue2rgb(p, q, t)
       if t < 0 then
         t = t + 1
       end
@@ -113,42 +125,44 @@ function M.hslToRgb(h, s, l)
   return r * 255, g * 255, b * 255
 end
 
+--- Convert hex color to HSL string
+---@param hex string Hex color code (e.g., "#ff5733")
+---@return string HSL string (e.g., "hsl(14, 91, 60)")
 function M.hexToHSL(hex)
-  local hsluv = require("solarized-osaka.hsluv")
   local rgb = M.hex_to_rgb(hex)
   local h, s, l = M.rgbToHsl(rgb[1], rgb[2], rgb[3])
 
   return string.format("hsl(%d, %d, %d)", math.floor(h + 0.5), math.floor(s + 0.5), math.floor(l + 0.5))
 end
 
---[[
- * Converts an HSL color value to RGB in Hex representation.
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  l       The lightness
- * @return  String           The hex representation
-]]
+--- Convert HSL values to hex color string
+---@param h number Hue (0-360)
+---@param s number Saturation (0-100)
+---@param l number Lightness (0-100)
+---@return string Hex color code (e.g., "#ff5733")
 function M.hslToHex(h, s, l)
   local r, g, b = M.hslToRgb(h / 360, s / 100, l / 100)
-
   return string.format("#%02x%02x%02x", r, g, b)
 end
 
+--- Replace all hex colors in current line with HSL equivalents
+--- Bound to <leader>r keymap
+---@return nil
 function M.replaceHexWithHSL()
-  -- Get the current line number
+  -- Get the current line number and content
   local line_number = vim.api.nvim_win_get_cursor(0)[1]
-
-  -- Get the line content
   local line_content = vim.api.nvim_buf_get_lines(0, line_number - 1, line_number, false)[1]
 
-  -- Find hex code patterns and replace them
+  -- Find all hex color patterns (#RRGGBB) and replace with HSL
   for hex in line_content:gmatch("#[0-9a-fA-F]+") do
     local hsl = M.hexToHSL(hex)
     line_content = line_content:gsub(hex, hsl)
   end
 
-  -- Set the line content back
+  -- Update the line with converted colors
   vim.api.nvim_buf_set_lines(0, line_number - 1, line_number, false, { line_content })
+
+  vim.notify("Converted hex colors to HSL", vim.log.levels.INFO)
 end
 
 return M
