@@ -114,11 +114,6 @@ vim.opt.option_name = value
 
 1. Open Mason: `<Space>cm`
 2. Install required LSP server
-## Documentation
-
-- **[QUICK_START.md](docs/QUICK_START.md)** - Quick reference guide
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
-- **[PLUGIN_ORGANIZATION.md](docs/PLUGIN_ORGANIZATION.md)** - Plugin structure
 
 ## License
 
