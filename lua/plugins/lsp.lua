@@ -1,5 +1,10 @@
+---@module 'plugins.lsp'
+--- LSP (Language Server Protocol) configuration
+--- Manages language servers, formatters, and linters
+--- Optimized for low memory usage
+
 return {
-  -- tools
+  -- Mason tool installer - optimized for performance
   {
     "mason-org/mason.nvim",
     opts = function(_, opts)
@@ -11,32 +16,85 @@ return {
         "shfmt",
         "emmet-ls",
         "cpptools",
-        "eslint-lsp",
+        "eslint_d", -- Fast ESLint daemon (replaces eslint-lsp)
+        "vtsls", -- Optimized TypeScript server (replaces typescript-language-server)
         "rust-analyzer",
         "tailwindcss-language-server",
-        "typescript-language-server",
         "css-lsp",
-        "clangd", -- Add this for C/C++ LSP
-        "clang-format", -- Add this for formatting
-        "gopls", -- Add this for Go LSP
+        "clangd",
+        "clang-format",
+        "gopls",
+        "pyright",
       })
     end,
   },
 
-  -- lsp servers
+  -- Configure vtsls (memory-optimized TypeScript server)
   {
     "neovim/nvim-lspconfig",
     opts = {
-      inlay_hints = { enabled = false },
-      ---@type lspconfig.options
+      inlay_hints = { enabled = false }, -- Disable inlay hints to save memory
       servers = {
+        -- Disable default TypeScript servers - we use vtsls instead
+        tsserver = { enabled = false },
+        ts_ls = { enabled = false },
+
+        -- Use vtsls for TypeScript/JavaScript (much more memory efficient)
+        vtsls = {
+          enabled = true,
+          single_file_support = false,
+          root_dir = function(...)
+            return require("lspconfig.util").root_pattern(".git")(...)
+          end,
+          settings = {
+            typescript = {
+              updateImportsOnFileMove = { enabled = "never" },
+              inlayHints = {
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = false },
+                variableTypes = { enabled = false },
+                propertyDeclarationTypes = { enabled = false },
+                functionLikeReturnTypes = { enabled = false },
+                enumMemberValues = { enabled = false },
+              },
+              -- Memory optimization settings
+              tsserver = {
+                maxTsServerMemory = 2048, -- Limit to 2GB per instance
+              },
+            },
+            javascript = {
+              updateImportsOnFileMove = { enabled = "never" },
+              inlayHints = {
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = false },
+                variableTypes = { enabled = false },
+                propertyDeclarationTypes = { enabled = false },
+                functionLikeReturnTypes = { enabled = false },
+                enumMemberValues = { enabled = false },
+              },
+            },
+            vtsls = {
+              -- Enable takeover mode for better performance
+              autoUseWorkspaceTsdk = true,
+              experimental = {
+                completion = {
+                  enableServerSideFuzzyMatch = false, -- Reduce CPU/memory
+                },
+              },
+            },
+          },
+        },
+
+        -- CSS Language Server
         cssls = {},
+
+        -- Emmet for HTML/CSS abbreviations
         emmet_ls = {
           filetypes = {
             "html",
             "css",
-            -- "javascript",
-            -- "typescript",
+            "javascript",
+            "typescript",
             "javascriptreact",
             "typescriptreact",
             "svelte",
@@ -46,6 +104,8 @@ return {
             html = { options = { ["bem.enabled"] = true } },
           },
         },
+
+        -- Tailwind CSS
         tailwindcss = {
           filetypes = {
             "html",
@@ -57,151 +117,87 @@ return {
             "vue",
             "svelte",
           },
-          init_options = {
-            userLanguages = {
-              ["javascriptreact"] = "html",
-              ["typescriptreact"] = "html",
-            },
-          },
-          -- root_dir = function(...)
-          --   return require("lspconfig.util").root_pattern(".git")(...)
-          -- end,
-        },
-        tsserver = {
-          root_dir = function(...)
-            return require("lspconfig.util").root_pattern(".git")(...)
-          end,
-          single_file_support = false,
           settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "literal",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
+            tailwindCSS = {
+              experimental = {
+                classRegex = {
+                  { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                  { "cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+                },
               },
             },
           },
         },
+
+        -- HTML Language Server
         html = {},
+
+        -- YAML Language Server with memory optimizations
         yamlls = {
           settings = {
             yaml = {
               keyOrdering = false,
+              format = { enable = false }, -- Disable formatting to save memory
+              validate = true,
+              hover = true,
+              completion = true,
             },
           },
         },
+
+        -- Lua Language Server with memory optimizations
         lua_ls = {
-          -- enabled = false,
           single_file_support = true,
           settings = {
             Lua = {
               workspace = {
                 checkThirdParty = false,
+                maxPreload = 2000, -- Limit workspace preload
+                preloadFileSize = 1000, -- Skip large files
               },
               completion = {
-                workspaceWord = true,
-                callSnippet = "Both",
+                workspaceWord = false, -- Disable to save memory
+                callSnippet = "Replace",
               },
-              misc = {
-                parameters = {
-                  "--log-level=warn",
-                  -- "--log-level="trace"
+              diagnostics = {
+                disable = { "incomplete-signature-doc", "trailing-space" },
+                groupSeverity = {
+                  strong = "Warning",
+                  strict = "Warning",
                 },
-                hint = {
-                  enable = true,
-                  setType = false,
-                  paramType = true,
-                  paramName = "Disable",
-                  semicolon = "Disable",
-                  arrayIndex = "Disable",
-                },
-                doc = {
-                  privateName = { "^_" },
-                },
-                type = {
-                  castNumberToInteger = true,
-                },
-                diagnostics = {
-                  disable = { "incomplete-signature-doc", "trailing-space" },
-                  -- enable = false,
-                  groupSeverity = {
-                    strong = "Warning",
-                    strict = "Warning",
-                  },
-                  groupFileStatus = {
-                    ["ambiguity"] = "Opened",
-                    ["await"] = "Opened",
-                    ["codestyle"] = "None",
-                    ["duplicate"] = "Opened",
-                    ["global"] = "Opened",
-                    ["luadoc"] = "Opened",
-                    ["redefined"] = "Opened",
-                    ["strict"] = "Opened",
-                    ["strong"] = "Opened",
-                    ["type-check"] = "Opened",
-                    ["unbalanced"] = "Opened",
-                    ["unused"] = "Opened",
-                  },
-                  unusedLocalExclude = { "_*" },
-                },
-                format = {
-                  enable = false,
-                  defaultConfig = {
-                    indent_style = "space",
-                    indent_size = "2",
-                    continuation_indent_size = "2",
-                  },
-                },
+                unusedLocalExclude = { "_*" },
+              },
+              format = {
+                enable = false, -- Use stylua instead
+              },
+              hint = {
+                enable = false, -- Disable hints to save memory
               },
             },
           },
         },
-        config = function()
-          local capabilities = {
-            textDocument = {
-              foldingRange = {
-                dynamicRegistration = false,
-                lineFoldingOnly = true,
-              },
-            },
-          }
-
-          capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
-        end,
-        setup = {},
       },
     },
-    {
-      "neovim/nvim-lspconfig",
-      opts = function()
-        local keys = require("lazyvim.plugins.lsp.keymaps").get()
-        vim.list_extend(keys, {
-          {
-            "gd",
-            function()
-              -- DO NOT RESUSE WINDOW
-              require("telescope.builtin").lsp_definitions({ reuse_win = false })
-            end,
-            desc = "Goto Definition",
-            has = "definition",
-          },
-        })
-      end,
-    },
+  },
+
+  -- Use eslint_d for fast, memory-efficient linting
+  {
+    "nvimtools/none-ls.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local nls = require("null-ls")
+      opts.sources = opts.sources or {}
+      table.insert(opts.sources, nls.builtins.diagnostics.eslint_d)
+      table.insert(opts.sources, nls.builtins.code_actions.eslint_d)
+    end,
+  },
+
+  -- Global LSP settings for memory optimization
+  {
+    "neovim/nvim-lspconfig",
+    init = function()
+      -- Reduce logging overhead
+      vim.lsp.set_log_level("warn")
+    end,
   },
 }
