@@ -41,45 +41,55 @@ return {
 
         -- Use vtsls for TypeScript/JavaScript (much more memory efficient)
         vtsls = {
-          enabled = true,
-          single_file_support = false,
-          root_dir = function(...)
-            return require("lspconfig.util").root_pattern(".git")(...)
-          end,
+          filetypes = {
+            "javascript",
+            "javascriptreact",
+            "javascript.jsx",
+            "typescript",
+            "typescriptreact",
+            "typescript.tsx",
+          },
           settings = {
-            typescript = {
-              updateImportsOnFileMove = { enabled = "never" },
-              inlayHints = {
-                parameterNames = { enabled = "literals" },
-                parameterTypes = { enabled = false },
-                variableTypes = { enabled = false },
-                propertyDeclarationTypes = { enabled = false },
-                functionLikeReturnTypes = { enabled = false },
-                enumMemberValues = { enabled = false },
+            complete_function_calls = true,
+            vtsls = {
+              enableMoveToFileCodeAction = true,
+              autoUseWorkspaceTsdk = true,
+              experimental = {
+                maxInlayHintLength = 30,
+                completion = {
+                  enableServerSideFuzzyMatch = true,
+                },
               },
-              -- Memory optimization settings
               tsserver = {
                 maxTsServerMemory = 2048, -- Limit to 2GB per instance
               },
             },
-            javascript = {
-              updateImportsOnFileMove = { enabled = "never" },
+            typescript = {
+              updateImportsOnFileMove = { enabled = "always" },
+              suggest = {
+                completeFunctionCalls = true,
+              },
               inlayHints = {
+                enumMemberValues = { enabled = false },
+                functionLikeReturnTypes = { enabled = false },
                 parameterNames = { enabled = "literals" },
                 parameterTypes = { enabled = false },
-                variableTypes = { enabled = false },
                 propertyDeclarationTypes = { enabled = false },
-                functionLikeReturnTypes = { enabled = false },
-                enumMemberValues = { enabled = false },
+                variableTypes = { enabled = false },
               },
             },
-            vtsls = {
-              -- Enable takeover mode for better performance
-              autoUseWorkspaceTsdk = true,
-              experimental = {
-                completion = {
-                  enableServerSideFuzzyMatch = false, -- Reduce CPU/memory
-                },
+            javascript = {
+              updateImportsOnFileMove = { enabled = "always" },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = false },
+                functionLikeReturnTypes = { enabled = false },
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = false },
+                propertyDeclarationTypes = { enabled = false },
+                variableTypes = { enabled = false },
               },
             },
           },

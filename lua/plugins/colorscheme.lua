@@ -85,6 +85,10 @@ return {
     priority = 1000,
     config = function()
       vim.g.matrix_theme_variant = "dark" -- or "light"
+      vim.g.matrix_contrast = false
+      vim.g.matrix_borders = true
+      -- vim.g.matrix_disable_background = false
+      vim.g.matrix_italic = false
     end,
   },
 
