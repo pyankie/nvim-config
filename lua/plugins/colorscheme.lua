@@ -1,32 +1,99 @@
+---@module 'colorschemes'
+--- Colorscheme configurations
+--- All colorschemes are organized here for easy management and switching
+---
+--- Active colorscheme is set in lua/config/lazy.lua under LazyVim opts
+--- To switch: :colorscheme <name>
+---
+--- Available themes:
+--- - solarized-osaka (default): Modern Solarized variant with excellent contrast
+--- - ayu: Clean and elegant theme with three variants (dark, mirage, light)
+--- - night-owl: Dark theme optimized for night coding
+--- - oh-lucy: Warm and cozy colorscheme
+--- - horizon: Vibrant dark theme with vivid colors
+--- - retro-theme: Nostalgic theme with retro aesthetics
+--- - matrix: Matrix-inspired theme
+
 return {
+  -- Solarized Osaka - Default theme
   {
     "craftzdog/solarized-osaka.nvim",
     branch = "osaka",
     lazy = true,
     priority = 1000,
-    opts = function()
-      return {
-        transparent = true,
-      }
-    end,
-  },
-  {
-    -- install ayu theme
-    "Shatur/neovim-ayu",
-    name = "ayu", -- Optional, but good practice
-    lazy = true,
-    -- priority = 1000,
     opts = {
-      mirage = true,
+      transparent = true, -- Enable transparent background
+      styles = {
+        sidebars = "transparent",
+        floats = "transparent",
+      },
+    },
+  },
+
+  -- Ayu - Clean and elegant
+  {
+    "Shatur/neovim-ayu",
+    name = "ayu",
+    lazy = true,
+    opts = {
+      mirage = true, -- Use mirage variant
       overrides = {
+        -- Custom float window styling
         NormalFloat = { bg = "#0c0c0c" },
         FloatBorder = { bg = "#0c0c0c", fg = "#0c0c0c" },
       },
     },
-    config = function(_, opts)
-      require("ayu").setup(opts)
-      vim.o.background = "mirage" -- Or "mirage", or "light"
-      vim.cmd.colorscheme("ayu")
+  },
+
+  -- Night Owl - For night owls
+  {
+    "oxfist/night-owl.nvim",
+    lazy = true,
+    priority = 1000,
+    opts = {},
+  },
+
+  -- Oh Lucy - Warm and cozy
+  {
+    "Yazeed1s/oh-lucy.nvim",
+    lazy = true,
+    priority = 1000,
+  },
+
+  -- Horizon - Vibrant colors
+  {
+    "akinsho/horizon.nvim",
+    lazy = true,
+    priority = 1000,
+  },
+
+  -- Retro Theme - Nostalgic vibes
+  {
+    "mistweaverco/retro-theme.nvim",
+    lazy = true,
+    opts = {
+      italic_comments = true,
+      disable_cache = false,
+      hot_reload = false,
+    },
+  },
+
+  -- Matrix Theme - Matrix-inspired
+  {
+    "iruzo/matrix-nvim",
+    lazy = true,
+    priority = 1000,
+    config = function()
+      vim.g.matrix_theme_variant = "dark" -- or "light"
     end,
+  },
+
+  "luisiacc/the-matrix.nvim",
+  name = "matrix", -- Use the name from the repo if different from the plugin name
+  opts = {
+    -- Optional configuration:
+    -- thematrix_transparent_mode = 1,
+    -- thematrix_function_style = "NONE",
+    -- thematrix_keyword_style = "italic",
   },
 }

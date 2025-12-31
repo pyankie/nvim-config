@@ -1,3 +1,13 @@
+---@module 'plugins.copilot'
+--- GitHub Copilot AI code completion
+--- Provides intelligent code suggestions powered by GitHub Copilot
+---
+--- Keymaps (in insert mode):
+--- - <C-s>: Accept suggestion
+--- - <M-]>: Next suggestion
+--- - <M-[>: Previous suggestion
+--- - <C-]>: Dismiss suggestion
+
 return {
   {
     "zbirenbaum/copilot.lua",

@@ -14,7 +14,7 @@ return {
       incremental_selection = {
         enabled = true,
       },
-      { modes = { char = { enabled = false } } },
+      modes = { char = { enabled = false } },
     },
     keys = {
       {
