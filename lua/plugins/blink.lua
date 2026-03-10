@@ -27,10 +27,10 @@ return {
     },
     appearance = {
       highlight_ns = vim.api.nvim_create_namespace("blink_cmp"),
-      use_nvim_cmp_as_default = false,
+      use_nvim_cmp_as_default = true,
       -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
       nerd_font_variant = "Nerd Font Mono",
-      kind_icons = icons.kind,
+      -- kind_icons = icons.kind,
     },
 
     completion = {
