@@ -20,11 +20,13 @@ return {
         "vtsls", -- Optimized TypeScript server (replaces typescript-language-server)
         "rust-analyzer",
         "tailwindcss-language-server",
+        "svelte-language-server",
         "css-lsp",
         "clangd",
         "clang-format",
         "gopls",
         "pyright",
+        "prisma-language-server",
       })
     end,
   },
@@ -102,9 +104,9 @@ return {
         emmet_ls = {
           filetypes = {
             "html",
-            "css",
-            "javascript",
-            "typescript",
+            -- "css",
+            -- "javascript",
+            -- "typescript",
             "javascriptreact",
             "typescriptreact",
             "svelte",
@@ -186,6 +188,12 @@ return {
             },
           },
         },
+
+        -- Prisma Language Server for schema.prisma files
+        prismals = {},
+
+        -- Svelte Language Server
+        svelte = {},
       },
     },
   },
