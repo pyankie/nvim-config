@@ -88,6 +88,13 @@ return {
     },
   },
   {
+    "nvim-mini/mini.pairs",
+    event = "VeryLazy",
+    opts = {
+      check_ts = true,
+    },
+  },
+  {
     "telescope.nvim",
     dependencies = {
       {
