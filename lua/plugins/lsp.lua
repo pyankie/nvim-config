@@ -37,9 +37,6 @@ return {
     opts = {
       inlay_hints = { enabled = false }, -- Disable inlay hints to save memory
       servers = {
-        -- Disable default TypeScript servers - we use vtsls instead
-        tsserver = { enabled = false },
-        ts_ls = { enabled = false },
 
         -- Use vtsls for TypeScript/JavaScript (much more memory efficient)
         vtsls = {
@@ -61,9 +58,6 @@ return {
                 completion = {
                   enableServerSideFuzzyMatch = true,
                 },
-              },
-              tsserver = {
-                maxTsServerMemory = 2048, -- Limit to 2GB per instance
               },
             },
             typescript = {
