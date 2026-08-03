@@ -14,9 +14,7 @@ return {
     cmd = "Copilot",
     event = "InsertEnter",
     dependencies = { "saghen/blink.cmp" },
-    opts = {
-      model = "gpt-5",
-    },
+    opts = {},
     config = function()
       require("copilot").setup({
         suggestion = {

@@ -88,10 +88,7 @@ return {
           description = "Fix grammar",
         },
       },
-      -- model = "gpt-4o",
-      -- model = "claude-3.7-sonnet",
-      -- model = "gemini-2.0-flash",
-      model = "gpt-5",
+      model = "gpt-4o",
       temperature = 0.7,
     },
     config = function(_, opts)
@@ -125,7 +122,7 @@ return {
 
       -- Model selection
       vim.keymap.set("n", "<leader>ccm", function()
-        local model = vim.fn.input("Select model (gpt-5, gpt-4o, claude-3.7-sonnet, gemini-2.0-flash): ")
+        local model = vim.fn.input("Select model (gpt-4o, claude-sonnet-4, gemini-2.0-flash, o3-mini): ")
         if model ~= "" then
           require("CopilotChat").reset()
           require("CopilotChat").setup(vim.tbl_extend("force", opts, { model = model }))
